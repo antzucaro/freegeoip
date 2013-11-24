@@ -245,6 +245,7 @@ func GeoipHandler() http.HandlerFunc {
             if !ok {
                 log.Printf("Missing the required header \"%s\".\n", conf.RequiredHeader)
 				http.Error(w, http.StatusText(403), 403)
+                return
             }
         }
 
