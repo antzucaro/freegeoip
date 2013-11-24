@@ -49,6 +49,7 @@ type Settings struct {
 		Expire      int `xml:",attr"`
 	}
 	Redis []string `xml:"Redis>Addr"`
+    RequiredHeader string
 }
 
 var conf *Settings
@@ -237,6 +238,16 @@ func GeoipHandler() http.HandlerFunc {
 			queryIP = srcIP
 			nqueryIP = nsrcIP
 		}
+
+        // Check for required header
+        if conf.RequiredHeader != "" {
+            _, ok := r.Header[conf.RequiredHeader]
+            if !ok {
+                log.Printf("Missing the required header \"%s\".\n", conf.RequiredHeader)
+				http.Error(w, http.StatusText(403), 403)
+            }
+        }
+
 		// Query the db.
 		geoip, err := lookup(stmt, queryIP, nqueryIP)
 		if err != nil {
