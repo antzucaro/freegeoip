@@ -255,8 +255,8 @@ func GeoipHandler() http.HandlerFunc {
 			http.NotFound(w, r)
 			return
 		}
-		switch a[1][0] {
-		case 'c': // csv
+		switch a[1] {
+		case "csv":
 			w.Header().Set("Content-Type", "application/csv")
 			fmt.Fprintf(w, `"%s","%s","%s","%s","%s","%s",`+
 				`"%s","%0.4f","%0.4f","%s","%s"`+"\r\n",
@@ -266,7 +266,7 @@ func GeoipHandler() http.HandlerFunc {
 				geoip.CityName, geoip.ZipCode,
 				geoip.Latitude, geoip.Longitude,
 				geoip.MetroCode, geoip.AreaCode)
-		case 'j': // json
+		case "json":
 			resp, err := json.Marshal(geoip)
 			if err != nil {
 				if conf.Debug {
@@ -282,7 +282,7 @@ func GeoipHandler() http.HandlerFunc {
 				w.Header().Set("Content-Type", "application/json")
 				w.Write(resp)
 			}
-		case 'x': // xml
+		case "xml":
 			w.Header().Set("Content-Type", "application/xml")
 			resp, err := xml.MarshalIndent(geoip, "", " ")
 			if err != nil {
